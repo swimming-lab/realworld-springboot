@@ -21,11 +21,30 @@ class UserRepositoryTest {
     @Test
     void when_save_user_expect_saved() {
         var userToSave = new User(
-                "user@email.com",
                 "username",
+                "user@email.com",
                 passwordEncoder.encode("rawPassword"));
 
         User save = userRepository.save(userToSave);
         assertThat(save).hasNoNullFieldsOrProperties();
+    }
+
+    @Test
+    void when_save_user_with_image_and_bio_expect_saved() {
+        var userToSave = new User(
+                "username",
+                "user@email.com",
+                passwordEncoder.encode("rawPassword"));
+
+        String image = "some-image";
+        String bio = "some-bio";
+
+        userToSave.setImage(image);
+        userToSave.setBio(bio);
+
+        User save = userRepository.save(userToSave);
+
+        assertThat(save.getImage()).isEqualTo(image);
+        assertThat(save.getBio()).isEqualTo(bio);
     }
 }
