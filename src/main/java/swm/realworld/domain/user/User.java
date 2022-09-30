@@ -2,12 +2,10 @@ package swm.realworld.domain.user;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import swm.realworld.domain.common.BaseEntity;
 
 import javax.persistence.*;
 
-@Setter
 @Getter
 @Entity
 @Table(name = "users")
@@ -37,5 +35,24 @@ public class User extends BaseEntity {
         this.username = username;
         this.email = email;
         this.password = password;
+    }
+
+    public User update(UserDto userDto) {
+        if (userDto.getEmail() != null) {
+            this.email = userDto.getEmail();
+        }
+        if (userDto.getUsername() != null) {
+            this.username = userDto.getUsername();
+        }
+        if (userDto.getPassword() != null) {
+            this.password = userDto.getPassword();
+        }
+        if (userDto.getImage() != null) {
+            this.image = userDto.getImage();
+        }
+        if (userDto.getBio() != null) {
+            this.bio = userDto.getBio();
+        }
+        return this;
     }
 }

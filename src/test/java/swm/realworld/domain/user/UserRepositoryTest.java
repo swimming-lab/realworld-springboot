@@ -39,8 +39,11 @@ class UserRepositoryTest {
         String image = "some-image";
         String bio = "some-bio";
 
-        userToSave.setImage(image);
-        userToSave.setBio(bio);
+        UserDto userDto = new UserDto();
+        userDto.setImage(image);
+        userDto.setBio(bio);
+
+        userToSave.update(userDto);
 
         User save = userRepository.save(userToSave);
 
