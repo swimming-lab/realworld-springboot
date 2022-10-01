@@ -1,11 +1,13 @@
 package swm.realworld.domain.user;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import swm.realworld.domain.common.BaseEntity;
 
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDto extends BaseEntity {

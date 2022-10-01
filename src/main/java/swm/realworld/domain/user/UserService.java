@@ -13,9 +13,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public User signup(UserDto userDto) {
+    public User signUp(UserDto userDto) {
         userRepository.findByUsernameOrEmail(userDto.getUsername(), userDto.getEmail())
-                        .ifPresent(user -> {throw new RuntimeException("Duplicate User");});
+                        .ifPresent(user -> {throw new RuntimeException("Duplicate User.");});
 
         final var user = new User(userDto.getUsername(), userDto.getEmail(), passwordEncoder.encode(userDto.getPassword()));
         return userRepository.save(user);
@@ -25,7 +25,7 @@ public class UserService {
     public User login(UserDto userDto) {
         return userRepository.findFirstByEmail(userDto.getEmail())
                 .filter(user -> passwordEncoder.matches(userDto.getPassword(), user.getPassword()))
-                .orElseThrow(() -> new RuntimeException("LOGIN_INFO_INVALID"));
+                .orElseThrow(() -> new RuntimeException("Login info invalid."));
     }
 
     @Transactional
