@@ -10,8 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Optional;
 
 import static java.util.Optional.of;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
@@ -32,7 +32,7 @@ class UserServiceTest {
     }
 
     @Test
-    void when_signUp_expect_password_encoded(@Mock UserDto userDto) {
+    void when_signUp_expect_password_encoded(@Mock UserDto.SignUp userDto) {
         given(userDto.getPassword()).willReturn("raw-password");
 
         userService.signUp(userDto);
@@ -41,25 +41,8 @@ class UserServiceTest {
     }
 
     @Test
-    void when_signUp_then_save_new_user() {
-        UserDto userDto = new UserDto();
-        userDto.setEmail("test@test.com");
-        userDto.setPassword("raw-password");
-        userDto.setUsername("test-man");
-
-        User saved = userService.signUp(userDto);
-
-        verify(userRepository, times(1)).save(any(User.class));
-
-        assertEquals(userDto.getEmail(), saved.getEmail());
-        assertEquals(userDto.getUsername(), saved.getUsername());
-        assertNull("", saved.getBio());
-        assertNull(saved.getImage());
-    }
-
-    @Test
-    void when_duplicate_signUp_expect_throw_exception(@Mock UserDto userDto, @Mock User user) {
-        when(userRepository.findFirstByEmail(userDto.getEmail())).thenReturn(of(user));
+    void when_duplicate_signUp_expect_throw_exception(@Mock UserDto.SignUp userDto, @Mock User user) {
+        when(userRepository.findByUsernameOrEmail(userDto.getUsername(), userDto.getEmail())).thenReturn(of(user));
 
         try {
             userService.signUp(userDto);
@@ -73,10 +56,10 @@ class UserServiceTest {
 
     @Test
     void when_valid_login_then_return_user() {
-        var userDto = new UserDto();
-        userDto.setEmail("test@test.com");
-        userDto.setPassword("raw-password");
-        userDto.setUsername("test-man");
+        UserDto.Login userDto = UserDto.Login.builder()
+                .email("test@test.com")
+                .password("raw-password")
+                .build();
 
         var user = new User(
                 "test-man",

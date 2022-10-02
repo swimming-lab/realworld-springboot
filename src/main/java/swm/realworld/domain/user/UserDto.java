@@ -1,24 +1,82 @@
 package swm.realworld.domain.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import lombok.*;
 import swm.realworld.domain.common.BaseEntity;
 
-@Setter
+import javax.validation.constraints.*;
+
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonTypeName("user")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 public class UserDto extends BaseEntity {
 
+    private Long id;
     private String username;
     private String email;
     private String password;
     private String image;
     private String bio;
 
-    protected User toUser() {
-        return new User(username, email, password);
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @JsonTypeName("user")
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.WRAPPER_OBJECT)
+    public static class SignUp {
+
+        @JsonProperty("username")
+        @NotNull
+        @Pattern(regexp = "[\\w\\d]{1,30}", message = "string contains alphabet or digit with length 1 to 30")
+        private String username;
+
+        @NotNull
+        @Email
+        private String email;
+
+        @NotBlank
+        @Size(min = 4, max = 16)
+        private String password;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @JsonTypeName("user")
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.WRAPPER_OBJECT)
+    public static class Login {
+
+        @NotNull
+        @Email
+        private String email;
+
+        @NotBlank
+        @Size(min = 4, max = 16)
+        private String password;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @JsonTypeName("user")
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.WRAPPER_OBJECT)
+    public static class Update {
+
+        private Long id;
+        @Pattern(regexp = "[\\w\\d]{1,30}", message = "string contains alphabet or digit with length 1 to 30")
+        private String username;
+        private String email;
+        @Size(min = 4, max = 16)
+        private String password;
+        private String bio;
+        private String image;
     }
 }

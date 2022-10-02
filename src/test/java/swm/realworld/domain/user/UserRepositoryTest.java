@@ -31,7 +31,7 @@ class UserRepositoryTest {
 
     @Test
     void when_save_user_with_image_and_bio_expect_saved() {
-        var userToSave = new User(
+        var user = new User(
                 "username",
                 "user@email.com",
                 passwordEncoder.encode("rawPassword"));
@@ -39,13 +39,10 @@ class UserRepositoryTest {
         String image = "some-image";
         String bio = "some-bio";
 
-        UserDto userDto = new UserDto();
-        userDto.setImage(image);
-        userDto.setBio(bio);
+        user.setImage(image);
+        user.setBio(bio);
 
-        userToSave.update(userDto);
-
-        User save = userRepository.save(userToSave);
+        User save = userRepository.save(user);
 
         assertThat(save.getImage()).isEqualTo(image);
         assertThat(save.getBio()).isEqualTo(bio);
