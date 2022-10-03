@@ -8,6 +8,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
@@ -25,10 +27,9 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public User login(UserDto.Login userDto) {
+    public Optional<User> login(UserDto.Login userDto) {
         return userRepository.findFirstByEmail(userDto.getEmail())
-                .filter(user -> passwordEncoder.matches(userDto.getPassword(), user.getPassword()))
-                .orElseThrow(() -> new RuntimeException("Login info invalid."));
+                .filter(user -> passwordEncoder.matches(userDto.getPassword(), user.getPassword()));
     }
 
     @Transactional
