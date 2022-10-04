@@ -1,4 +1,4 @@
-package swm.realworld.infrastructure.jwt;
+package swm.realworld.infrastructure.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,7 +19,7 @@ public class AuthenticationProvider {
         UserDetails userDetail = userDetailsService.loadUserByUsername(username);
         if (userDetail == null) return null;
         User user = (User) userDetail;
-        UserDto authenticatedUser = UserDto.builder()
+        UserDto.Auth authenticatedUser = UserDto.Auth.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())

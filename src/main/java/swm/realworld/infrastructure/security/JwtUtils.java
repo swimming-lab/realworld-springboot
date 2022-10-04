@@ -1,4 +1,4 @@
-package swm.realworld.infrastructure.jwt;
+package swm.realworld.infrastructure.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

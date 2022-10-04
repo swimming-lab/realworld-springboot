@@ -2,17 +2,15 @@ package swm.realworld.application.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import swm.realworld.domain.user.User;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 import swm.realworld.domain.user.UserDto;
 import swm.realworld.domain.user.UserService;
-import swm.realworld.infrastructure.jwt.JwtUtils;
+import swm.realworld.infrastructure.security.JwtUtils;
 
 import javax.validation.Valid;
 
-import static java.util.Optional.of;
 import static swm.realworld.application.user.UserModel.fromUserAndToken;
 
 @RestController
@@ -30,8 +28,29 @@ public class UserController {
 
     @PostMapping("/users/login")
     public ResponseEntity<UserModel> loginUser(@Valid @RequestBody UserDto.Login param) {
-        return of(userService
+        return ResponseEntity.of(userService
                 .login(param)
                 .map(user -> fromUserAndToken(user, jwtUtils.encode(user.getUsername()))));
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<UserModel> getUser(@AuthenticationPrincipal UserDto.Auth authDto) {
+        return ResponseEntity.of(userService
+                .getUserById(authDto.getId())
+                .map(user -> fromUserAndToken(user, getCurrentCredential())));
+    }
+
+    @PutMapping("/user")
+    public UserModel putUser(
+            @AuthenticationPrincipal UserDto.Auth authDto, @Valid @RequestBody UserDto.Update param) {
+        final var userUpdated = userService.update(authDto.getId(), param);
+        return fromUserAndToken(userUpdated, getCurrentCredential());
+    }
+
+    private static String getCurrentCredential() {
+        return SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getCredentials()
+                .toString();
     }
 }

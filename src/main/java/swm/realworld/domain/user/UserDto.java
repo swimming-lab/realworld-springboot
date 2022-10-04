@@ -16,10 +16,8 @@ import javax.validation.constraints.*;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 public class UserDto extends BaseEntity {
 
-    private Long id;
     private String username;
     private String email;
-    private String password;
     private String image;
     private String bio;
 
@@ -76,6 +74,19 @@ public class UserDto extends BaseEntity {
         private String email;
         @Size(min = 4, max = 16)
         private String password;
+        private String bio;
+        private String image;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Auth {
+
+        private Long id;
+        private String email;
+        private String username;
         private String bio;
         private String image;
     }

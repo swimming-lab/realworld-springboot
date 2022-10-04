@@ -1,4 +1,4 @@
-package swm.realworld.infrastructure.jwt;
+package swm.realworld.infrastructure.security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

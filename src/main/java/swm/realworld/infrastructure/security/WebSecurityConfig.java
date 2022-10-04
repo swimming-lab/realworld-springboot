@@ -1,4 +1,4 @@
-package swm.realworld.infrastructure.jwt;
+package swm.realworld.infrastructure.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

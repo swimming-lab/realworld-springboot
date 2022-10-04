@@ -34,7 +34,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public User update(Long userId, UserDto.Update userDto) {
-        User user = userRepository.findById(userId).orElseThrow(() -> {
+        final var user = userRepository.findById(userId).orElseThrow(() -> {
             throw new RuntimeException("Not exist User.");
         });
 
@@ -63,8 +63,8 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public User getUserById(Long userId) {
-        return userRepository.findById(userId).orElseThrow();
+    public Optional<User> getUserById(Long userId) {
+        return userRepository.findById(userId);
     }
 
     @Transactional(readOnly = true)
@@ -72,5 +72,4 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findFirstByEmail(email).orElse(null);
     }
-
 }
