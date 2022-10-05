@@ -49,6 +49,15 @@ public class User extends BaseEntity implements UserDetails {
         this.password = password;
     }
 
+    public ProfileDto viewProfile(User user) {
+        return ProfileDto.builder()
+                .username(this.username)
+                .bio(this.bio)
+                .image(this.image)
+                .following(followingUsers.contains(user))
+                .build();
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -67,6 +76,16 @@ public class User extends BaseEntity implements UserDetails {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    User followUser(User followee) {
+        followingUsers.add(followee);
+        return this;
+    }
+
+    User unfollowUser(User followee) {
+        followingUsers.remove(followee);
+        return this;
     }
 
     @Override

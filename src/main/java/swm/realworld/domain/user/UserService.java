@@ -58,8 +58,8 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public User getUserByUsername(String username) {
-        return userRepository.findByUsername(username).orElseThrow();
+    public Optional<User> getUserByUsername(String username) {
+        return userRepository.findFirstByUsername(username);
     }
 
     @Transactional(readOnly = true)
