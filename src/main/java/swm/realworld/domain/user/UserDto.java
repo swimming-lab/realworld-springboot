@@ -3,10 +3,15 @@ package swm.realworld.domain.user;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import swm.realworld.domain.common.BaseEntity;
 
 import javax.validation.constraints.*;
+
+import static java.lang.String.valueOf;
 
 @Getter
 @Builder
@@ -19,7 +24,11 @@ public class UserDto extends BaseEntity {
     private String username;
     private String email;
     private String image;
-    private String bio;
+    private String token;
+
+    public static UserDto fromUserAndToken(User user, String token) {
+        return new UserDto(valueOf(user.getEmail()), valueOf(user.getUsername()), valueOf(user.getImage()), token);
+    }
 
     @Getter
     @Builder

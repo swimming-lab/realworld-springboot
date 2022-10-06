@@ -69,7 +69,7 @@ class UserServiceTest {
         when(userRepository.findFirstByEmail(anyString())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(eq(userDto.getPassword()), eq(user.getPassword()))).thenReturn(true);
 
-        User actual = userService.login(userDto);
+        User actual = userService.login(userDto).orElseThrow();
 
         assertEquals(userDto.getEmail(), actual.getEmail());
     }

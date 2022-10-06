@@ -11,8 +11,6 @@ import swm.realworld.infrastructure.security.JwtUtils;
 
 import javax.validation.Valid;
 
-import static swm.realworld.application.user.UserModel.fromUserAndToken;
-
 @RestController
 @RequiredArgsConstructor
 public class UserController {
@@ -21,30 +19,30 @@ public class UserController {
     private final JwtUtils jwtUtils;
 
     @PostMapping("/users")
-    public UserModel postUser(@Valid @RequestBody UserDto.SignUp param) {
+    public UserDto postUser(@Valid @RequestBody UserDto.SignUp param) {
         final var userSaved = userService.signUp(param);
-        return fromUserAndToken(userSaved, jwtUtils.encode(userSaved.getUsername()));
+        return UserDto.fromUserAndToken(userSaved, jwtUtils.encode(userSaved.getUsername()));
     }
 
     @PostMapping("/users/login")
-    public ResponseEntity<UserModel> loginUser(@Valid @RequestBody UserDto.Login param) {
+    public ResponseEntity<UserDto> loginUser(@Valid @RequestBody UserDto.Login param) {
         return ResponseEntity.of(userService
                 .login(param)
-                .map(user -> fromUserAndToken(user, jwtUtils.encode(user.getUsername()))));
+                .map(user -> UserDto.fromUserAndToken(user, jwtUtils.encode(user.getUsername()))));
     }
 
     @GetMapping("/user")
-    public ResponseEntity<UserModel> getUser(@AuthenticationPrincipal UserDto.Auth authDto) {
+    public ResponseEntity<UserDto> getUser(@AuthenticationPrincipal UserDto.Auth authDto) {
         return ResponseEntity.of(userService
                 .getUserById(authDto.getId())
-                .map(user -> fromUserAndToken(user, getCurrentCredential())));
+                .map(user -> UserDto.fromUserAndToken(user, getCurrentCredential())));
     }
 
     @PutMapping("/user")
-    public UserModel putUser(
+    public UserDto putUser(
             @AuthenticationPrincipal UserDto.Auth authDto, @Valid @RequestBody UserDto.Update param) {
         final var userUpdated = userService.update(authDto.getId(), param);
-        return fromUserAndToken(userUpdated, getCurrentCredential());
+        return UserDto.fromUserAndToken(userUpdated, getCurrentCredential());
     }
 
     private static String getCurrentCredential() {
