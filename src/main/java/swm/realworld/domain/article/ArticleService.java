@@ -1,45 +1,47 @@
 package swm.realworld.domain.article;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import swm.realworld.domain.article.tag.Tag;
 import swm.realworld.domain.user.UserDto;
+import swm.realworld.domain.user.UserService;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
+    private final UserService userService;
 
     @Transactional
-    @Override
-    public ArticleDto createArticle(ArticleDto article, UserDto.Auth authUser) {
-        String slug = String.join("-", article.getTitle().split(" "));
-        UserEntity author = User.builder()
-                .id(authUser.getId())
-                .name(authUser.getName())
-                .bio(authUser.getBio())
-                .image(authUser.getImage())
-                .build();
+    public Article createArticle(ArticleDto articleDto, UserDto.Auth authUser) {
+        final var author = userService.getUserById(authUser.getId()).orElseThrow();
+        String slug = String.join("-", articleDto.getTitle().split(" "));
 
-        ArticleEntity articleEntity = ArticleEntity.builder()
+        Article article = Article.builder()
                 .slug(slug)
-                .title(article.getTitle())
-                .description(article.getDescription())
-                .body(article.getBody())
+                .title(articleDto.getTitle())
+                .description(articleDto.getDescription())
+                .body(articleDto.getBody())
                 .author(author)
                 .build();
-        List<ArticleTagRelationEntity> tagList = new ArrayList<>();
-        for (String tag: article.getTagList()) {
-            tagList.add(ArticleTagRelationEntity.builder().article(articleEntity).tag(tag).build());
-        }
-        articleEntity.setTagList(tagList);
 
-        articleEntity = articleRepository.save(articleEntity);
-        return convertEntityToDto(articleEntity, false, 0L, false);
+        Set<Tag> tags = new HashSet<>();
+        for (String tag: articleDto.getTagList()) {
+            tags.add(Tag.builder().value(tag).build());
+        }
+        article.setTags(tags);
+
+        return articleRepository.save(article);
+    }
+
+    public Page<Article> getListAll(Pageable pageable) {
+        return articleRepository.findAll(pageable);
     }
 }

@@ -1,7 +1,10 @@
 package swm.realworld.domain.article;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import swm.realworld.domain.article.tag.Tag;
 import swm.realworld.domain.common.BaseEntity;
 import swm.realworld.domain.user.User;
 
@@ -11,10 +14,12 @@ import java.util.Set;
 
 import static javax.persistence.CascadeType.PERSIST;
 
+@Builder
 @Getter
 @Entity
 @Table(name = "articles")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Article extends BaseEntity {
 
     @Id
@@ -42,4 +47,14 @@ public class Article extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false))
     @ManyToMany(fetch = FetchType.LAZY, cascade = PERSIST)
     private Set<User> userFavorited = new HashSet<>();
+
+    @JoinTable(name = "articles_tags",
+            joinColumns = @JoinColumn(name = "article_id", referencedColumnName = "id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id", nullable = false))
+    @ManyToMany(fetch = FetchType.LAZY, cascade = PERSIST)
+    private Set<Tag> tags = new HashSet<>();
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
 }

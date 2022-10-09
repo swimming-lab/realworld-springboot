@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Builder
@@ -27,7 +27,7 @@ public class ArticleDto {
     private String description;
     @NotNull
     private String body;
-    private List<String> tagList;
+    private Set<String> tagList;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
