@@ -1,7 +1,6 @@
 package swm.realworld.domain.article;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +9,7 @@ import swm.realworld.domain.user.UserDto;
 import swm.realworld.domain.user.UserService;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -34,14 +34,18 @@ public class ArticleService {
 
         Set<Tag> tags = new HashSet<>();
         for (String tag: articleDto.getTagList()) {
-            tags.add(Tag.builder().value(tag).build());
+            tags.add(Tag.builder().name(tag).build());
         }
         article.setTags(tags);
 
         return articleRepository.save(article);
     }
 
-    public Page<Article> getListAll(Pageable pageable) {
+    public List<Article> getListByAuthorUsername(String username, Pageable pageable) {
+        return articleRepository.findByAuthorUsername(username, pageable);
+    }
+
+    public List<Article> getListAll(Pageable pageable) {
         return articleRepository.findAll(pageable);
     }
 }
